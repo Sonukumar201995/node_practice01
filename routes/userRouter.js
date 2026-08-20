@@ -3,14 +3,39 @@ const router = express.Router();
 
 const user = require("./../models/user");
 
-// ================= GET METHOD =================
+
+// .................Get api...............
 router.get("/user", async (req, res) => {
     try {
         const data = await user.find();
 
-        console.log("Data fetched");
-
         res.status(200).json(data);
+    } catch (err) {
+        console.log(err);
+
+        res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+});
+
+
+// ================= GET METHOD paramer call  =================
+router.get("/user/:role", async (req, res) => {
+    try {
+        const role = req.params.role;
+
+        if (role === "admin" || role === "customer") {
+            const data = await user.find({ role: role });
+
+            console.log("Data fetched");
+
+            res.status(200).json(data);
+        } else {
+            res.status(400).json({
+                error: "Invalid role"
+            });
+        }
     } catch (err) {
         console.log(err);
 
